@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,10 +5,27 @@ namespace oslashed
 {
     public class Player : MonoBehaviour
     {
+        public int health;
+        public int maxHealth;
+        public int shield;
+        
         public FMODUnity.StudioEventEmitter emitter;
         public FMODUnity.StudioEventEmitter musicEmitter;
         public SpriteRenderer sr;
         public int state = 0;
+        public Animator anim;
+        private static readonly int Down = Animator.StringToHash("Down");
+        private static readonly int Left = Animator.StringToHash("Left");
+        private static readonly int Up = Animator.StringToHash("Up");
+        private static readonly int Right = Animator.StringToHash("Right");
+        private static readonly int Hurt = Animator.StringToHash("Hurt");
+
+        private int stash = -2;
+        
+        private void Start()
+        {
+            anim = GetComponent<Animator>();
+        }
 
         private int VectorConversion(Vector2 v)
         {
@@ -24,18 +39,69 @@ namespace oslashed
         [ContextMenu("Cast")]
         public void OnCast(InputAction.CallbackContext context)
         {
+            
             var value = context.ReadValue<Vector2>();
             if (value == Vector2.zero)
             {
                 sr.color = Color.white;
                 return;
             }
+            if (!context.performed)
+            {
+                stash = -2;
+            }
+            
+            var val = VectorConversion(value);
+            var beat = BeatBar.instance.actualBeat;
             sr.color = Color.red;
-            emitter.SetParameter("Direction", VectorConversion(value));
+        
+            // if spell slot available
+            if (BeatBar.instance.casted[beat - 1] == -2)
+            {
+                // FIGURE BOUNDS
+                var mil = (Time.time - BeatBar.instance.actualLastBeatTime) * 1000;
+                var thresh = BeatBar.instance.realThresholdInMillis;
+                
+                // LOGIC
+                if (BeatBar.instance.casted[beat - 1] != 3 && mil > (60000/BeatBar.instance.tempo - 2*thresh)/2 && mil < (60000/BeatBar.instance.tempo - 2*thresh)/2 + 2*thresh)
+                {
+                    BeatBar.instance.casted[beat - 1] = val;
+                    BeatBar.instance.targetImages[beat + 4].sprite = BeatBar.instance.arrows[val + 1];
+                }
+                else
+                {
+                    val = 3;
+                }
+
+                Debug.Log(mil);
+            
+                // ANIMATIONS
+                switch (val)
+                {
+                    case -1:
+                        anim.SetTrigger(Down);
+                        break;
+                    case 0:
+                        anim.SetTrigger(Left);
+                        break;
+                    case 1:
+                        anim.SetTrigger(Up);
+                        break;
+                    case 2:
+                        anim.SetTrigger(Right);
+                        break;
+                }
+            }
+            else
+            {
+                val = 3;
+            }
+            
+            // SOUND
+            emitter.SetParameter("Direction", stash != -2 ? stash : val);
             emitter.PlayInstance();
-            var mil = (Time.time - BeatBar.instance.lastBeatTime) * 1000;
-            if (mil > 300) mil = 600 - mil;
-            Debug.Log(mil);
+            
+            stash = val;
         }
         
         //musicEmitter.SetParameter("Progression", ++state);
