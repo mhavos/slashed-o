@@ -103,6 +103,11 @@ namespace oslashed
             
             stash = val;
         }
+
+        public void OnStart(InputAction.CallbackContext context)
+        {
+           
+        }
         
         //musicEmitter.SetParameter("Progression", ++state);
     }
