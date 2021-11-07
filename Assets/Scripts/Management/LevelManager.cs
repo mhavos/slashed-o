@@ -6,16 +6,18 @@ namespace oslashed
 {
     public class LevelManager : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        public static LevelManager instance;
+        public Camera uiCam;
+        public float currentSpeed = 0.55555555555555555f;//0.6666666666f;
+    
+        public LevelManager()
         {
-        
+            if (instance == null || instance.Equals(null))
+                instance = this;
+            else
+                Destroy(this);
         }
-
-        // Update is called once per frame
-        void Update()
-        {
         
-        }
+        
     }
 }

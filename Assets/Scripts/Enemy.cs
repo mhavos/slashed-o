@@ -17,6 +17,7 @@ namespace oslashed
         public int arrowType;
         public bool floating;
         public bool stunned;
+        public bool isAbleToAttack;
         
         void Start()
         {

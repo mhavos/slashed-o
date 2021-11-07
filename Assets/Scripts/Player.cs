@@ -25,6 +25,7 @@ namespace oslashed
         private void Start()
         {
             anim = GetComponent<Animator>();
+            anim.speed = LevelManager.instance.currentSpeed;
         }
 
         private int VectorConversion(Vector2 v)
