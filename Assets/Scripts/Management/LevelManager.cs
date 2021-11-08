@@ -33,6 +33,8 @@ namespace oslashed
         public Player p;
         public event TriggerTutorial triggerTutorialEvent;
 
+        public Animator enemyEffect;
+
         public LevelManager()
         {
             if (instance == null || instance.Equals(null))
@@ -200,6 +202,7 @@ namespace oslashed
             introText.enabled = false;
             activeEnemies.Add(Instantiate(enemies[0].gameObject, slotA).GetComponent<Enemy>());
             activeEnemies.Add(Instantiate(enemies[1].gameObject, slotB).GetComponent<Enemy>());
+            enemyEffect.speed = currentSpeed;
             yield return new WaitForSeconds(3);
             OnTriggerTutorialEvent(tutorialStep);
         }

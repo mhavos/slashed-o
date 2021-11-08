@@ -77,41 +77,47 @@ namespace oslashed
         private void Update()
         {
             var mil = (Time.time - lastBeatTime) * 1000;
-            if (mil < realThresholdInMillis || mil > 60000/tempo - realThresholdInMillis)
+            if (mil > 60000/tempo - realThresholdInMillis)
             {
-                if (!toggle)
+                if (!toggle && beat == 1)
                 {
-                    Toggle(beat);
+                    Toggle();
                     toggle = true;
                 }
+
+            }else if (mil < realThresholdInMillis){
+                
+                Highlight(((beat+2)%4)+1);
+                    
             }
             else
             {
-                 Toggle(-1);
-                 toggle = false;
+                Highlight(-1);
+                toggle = false;
             }
 
             if (mil > 60000 / tempo / 2 && !beatToggle)
-            {
-                actualLastBeatTime = Time.time;
-                actualBeat = beat;
-                beatToggle = true;
-                EnemyAct();
-            }
+                {
+                    actualLastBeatTime = Time.time;
+                    actualBeat = beat;
+                    beatToggle = true;
+                    EnemyAct();
+                }
+
         }
 
-        public void Toggle(int beat)
+        public void Toggle()
+        {
+            targetImages.GetRange(5,4).ForEach(x => x.sprite = emptyArrow);
+            ResolveSpell();
+        }
+
+        public void Highlight(int beat)
         {
             if (beat == -1)
             {
                 targetImages.GetRange(1,4).ForEach(x => x.sprite = deactivated);
                 return;
-            }
-
-            if (beat == 1)
-            {
-                targetImages.GetRange(5,4).ForEach(x => x.sprite = emptyArrow);
-                ResolveSpell();
             }
             targetImages[(beat + 2) % 4 +1].sprite = deactivated;
             targetImages[beat].sprite = activated;
