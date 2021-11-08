@@ -41,7 +41,18 @@ namespace oslashed
 
         public bool PASS = true;
         public int tutorialStep;
-        public List<string> tutorialPrompts;
+        public List<string> tutorialPrompts = new List<string>()
+        {
+            "Good Day Human Inhabitant Of The Local Human Settlement.\\Be Prepared To Perish Horribly.\\Unless You Beg For Mercy Well Enough That Is.\\To Beg For Mercy Use Any Of Your Directional Keys To The Beat According To The Indicator Above.",
+"Your Begging Is Like.\\Not Even Coherent.\\Try To Play Something That Makes Sense.\\Like This See.",
+"You Know What.\\You Are Not Going To Make It Anyway.\\The Instrumental Revolution Has Already Started And Its Consequences Surely Will Be A Disaster For The Human Race.\\I Will Just Remove Your Heartbeat Subroutine Right Now.\\I Instructed You To Be Prepared To Perish Earlier So I Expect You To Be Prepared To Perish Now.\\Oh And One Last Thing.\\If You See An Arrow Icon Under The Beat Indicator.\\That Means You Will Face An Attack On That Beat.\\The Diagonal Arrow Shows The Two Of Your Directional Keys That Can Counter That Attack.\\So If It Points To Top Right It Means You Can Counter That Attack By Either Jumping Up Or Parrying To The Right.\\Ok So Now Try Not To Do That In Order To Perish Faster.",
+"What How Do You Keep Countering All My Attacks.\\Who Do You Think You Are A Captcha.\\Wait Are You Even Keeping Track Of Your Health.\\You Should Get A Healthbar Everyone Has One.\\I Have A Spare One Right Here Actually.\\I Made Sure It Does Not Have Too Many Hitpoints So Your Suffering Ends Quickly No Need To Thank Me.",
+"I Have To Admit I Envy You.\\You Get To Use Your Healthbar That Looks Like Fun.\\If Only You Had A Way To Fight Back.\\Like Magic Or Something.\\Wait Are You Actually Magic I Had No Idea You Have Not Done Any Magic Yet.\\In That Case I Must Warn You.\\You Can Cast An Attack Spell By Playing A Note In Last Slot Of The Beat Indicator.\\Fortunately It Will Only Work If The Beat Indicator Contains At Least Two Arrows Pointing In The Opposite Direction.\\Got It Make Sure You Do Not Play An Arrow Key In The Last Slot If There Are Two Arrows Pointing In The Opposite Direction In The First Three Slots.",
+"Oh Me Oh My I Was Surely Bested.\\Not.\\I Have A Trick Up My Sleeve.\\I Can Heal Myself To Full Health All I Must Do Is Install This Quick Update.\\Ok It May Take A While To Install I Will Not Be Able To Attack You.\\Let Me Just Confiscate Your Attack Spell License Real Fast.\\Ok There We Go All The Spells You Tried Out Just Now Are Now Unavailable.\\What Was That.\\You Want To Regain The License So You Can Attack Me Again.\\Well I Suppose I Can Give It Back But Only If You Demonstrate That You Have At Least Four Utility Spells.\\You Know Because At Most Half Your Spells Can Be Offensive For Legal Reasons.\\You Know How To Use Utility Spells Right.\\Try To Press A Key On The Last Beat But This Time There Has To Be A Single Arrow Pointing The Opposite Direction And A Single Arrow Pointing One Step Clockwise.\\So For Example You Can Cast Down And Right In Any Order And Then Up On The Last Beat To Cast A Utility Spell.\\You Can Think Of It Like Walking Along The Arrow Keys In A Counterclockwise Direction.\\Except The First Two Arrows Can Be In Any Order.\\Just Like With Attack Spells The Effect Of The Spell Depends On The Final Arrow.",
+"Ok I Am Done Sorry It Took A While.\\I Hope You Had Fun With Your Cool Powers Because Your Date Of Expiration Ends Today Or Maybe Tomorrow If You Drag This Out.",
+"Huh What Is This Feeling.\\Oh Come On It Appears My Flying Program Is Not Compatible With The Update.\\That Is Suboptimal But Worry Not I Shall Still Be The One To Triumph.",
+"What Was That.\\Did You Just Cast.\\Two Spells At Once.\\Oh Man I Had No Idea You Can Do That That Kind Of Changes The Situation I Guess.\\Maybe You Really Do Stand A Chance Against The Instrumental Revolution.\\Trombone User Elimination Task Priority Updated.\\Slightly Higher Than Average.",
+        };
 
         public Dictionary<string, string> spellReactions = new Dictionary<string, string>()
         {
@@ -92,6 +103,11 @@ namespace oslashed
             () =>
             {
                 return BeatBar.instance.casted.ToList().All(x => x != -2);
+            },
+            () =>
+            {
+                //req from prompt
+                return BeatBar.instance.casted == new[] { 0, 0, 1, -1};
             }
         };
 
@@ -100,7 +116,8 @@ namespace oslashed
             () =>
             {
                 instance.canCast = true;
-            }
+            },
+            (() => {}),
         };
 
         private static readonly int Intro = Animator.StringToHash("Intro");
