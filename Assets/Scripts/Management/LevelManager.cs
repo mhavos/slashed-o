@@ -31,6 +31,8 @@ namespace oslashed
         public Player p;
         public event TriggerTutorial triggerTutorialEvent;
 
+        public Animator enemyEffect;
+
         public LevelManager()
         {
             if (instance == null || instance.Equals(null))
@@ -165,6 +167,7 @@ namespace oslashed
             introText.enabled = false;
             Instantiate(enemies[0].gameObject, slotA);
             Instantiate(enemies[1].gameObject, slotB);
+            enemyEffect.speed = currentSpeed;
             yield return new WaitForSeconds(3);
             OnTriggerTutorialEvent(0);
         }

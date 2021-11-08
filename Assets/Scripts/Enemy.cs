@@ -25,6 +25,7 @@ namespace oslashed
         void Start()
         {
             anim = GetComponent<Animator>();
+            anim.speed = LevelManager.instance.currentSpeed;
         }
 
         void Update()
