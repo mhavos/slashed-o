@@ -1,0 +1,14 @@
+Názov tímu: ø
+Názov hry: The Instrumental Revolution
+Vývojové prostredie a prostriedky: Unity
+
+Obrázky:
+* vlastné obrázky
+Zdroj: my
+Autor: havoš
+Licencia: Public Domain
+
+Hudba:
+* vlastná hudba
+Zdroj: my
+Autor: Viktor
