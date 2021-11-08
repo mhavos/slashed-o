@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,11 +23,13 @@ namespace oslashed
         private static readonly int Hurt = Animator.StringToHash("Hurt");
 
         private int stash = -2;
-        
+
+        private PlayerInput pi;
         private void Start()
         {
             anim = GetComponent<Animator>();
             anim.speed = LevelManager.instance.currentSpeed;
+            pi = GetComponent<PlayerInput>();
         }
 
         private int VectorConversion(Vector2 v)
@@ -40,7 +44,7 @@ namespace oslashed
         [ContextMenu("Cast")]
         public void OnCast(InputAction.CallbackContext context)
         {
-            
+            if (!LevelManager.instance.canCast) return;   
             var value = context.ReadValue<Vector2>();
             if (value == Vector2.zero)
             {
@@ -105,11 +109,13 @@ namespace oslashed
             stash = val;
         }
 
-        public void OnStart(InputAction.CallbackContext context)
-        {
-           
-        }
         
+        
+        private void Update()
+        {
+            
+        }
+
         //musicEmitter.SetParameter("Progression", ++state);
     }
 }
