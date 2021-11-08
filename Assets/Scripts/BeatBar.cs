@@ -30,6 +30,8 @@ namespace oslashed
         
         public List<Sprite> arrows;
         public Sprite emptyArrow;
+
+        public Transform[] enemySlots = new Transform[2];
         
         public BeatBar()
         {
@@ -60,6 +62,7 @@ namespace oslashed
                     realThresholdInMillis = 60000 / tempo * BEAT_COMPLETION_THRESHOLD;
                     this.beat = beat.beat;
                     beatToggle = false;
+                    EnemyAct();
                 }
                 catch (Exception e)
                 {
@@ -117,6 +120,26 @@ namespace oslashed
         {
             
             casted = new []{-2, -2, -2, -2};
+        }
+
+        public void EnemyAct()
+        {
+            //all enemies are iterated over, front one first
+            bool mayBeginAttack = true;
+            for(int i = 0; i < enemySlots.Length; i++)
+            {
+                Transform slot = enemySlots[i];
+                if(slot.childCount > 0){
+                    GameObject child = slot.GetChild(0).gameObject;
+                    mayBeginAttack = child.GetComponent<Enemy>().Beat(mayBeginAttack);
+                }
+            }
+
+        }
+
+        public void EnemyAttack(Enemy attacker, int direction)
+        {
+                //forward the OnAttack(Enemy attacker,int direction) function to player if last note does not counter
         }
     } 
 }
