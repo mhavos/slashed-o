@@ -120,7 +120,5 @@ namespace oslashed
         {
 
         }
-        
-        //musicEmitter.SetParameter("Progression", ++state);
     }
 }

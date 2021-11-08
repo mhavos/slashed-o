@@ -107,7 +107,7 @@ namespace oslashed
             () =>
             {
                 //req from prompt
-                return BeatBar.instance.casted == new[] { 0, 0, 1, -1};
+                return BeatBar.instance.casted == new[] { 1, 1, 2, 0};
             }
         };
 
@@ -117,7 +117,14 @@ namespace oslashed
             {
                 instance.canCast = true;
             },
-            (() => {}),
+            (() =>
+            {
+                instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
+            }),
+            (() =>
+            {
+                instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
+            }),
         };
 
         private static readonly int Intro = Animator.StringToHash("Intro");
