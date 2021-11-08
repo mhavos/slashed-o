@@ -9,6 +9,7 @@ namespace oslashed
     public class Enemy : MonoBehaviour
     {
         public int health;
+        public int maxHealth;
         public HealthBar hb;
 
         public float attackProbability;
