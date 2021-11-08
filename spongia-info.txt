@@ -6,9 +6,15 @@ Obrázky:
 * vlastné obrázky
 Zdroj: my
 Autor: havoš
-Licencia: Public Domain
+Licencia: public domain
 
 Hudba:
 * vlastná hudba
 Zdroj: my
 Autor: Viktor
+
+Fonty:
+* slashed-o
+Zdroj: my
+Autor: havoš
+Licencia: public domain
