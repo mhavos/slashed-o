@@ -22,9 +22,11 @@ namespace oslashed
         public TMP_Text nextText;
         public TMP_Text introText;
         public bool canCast;
+        public bool hasHealthBar;
 
         public Transform slotA;
         public Transform slotB;
+        public List<Enemy> activeEnemies;
 
         public List<Enemy> enemies;
 
@@ -41,10 +43,10 @@ namespace oslashed
 
         public bool PASS = true;
         public int tutorialStep;
-        public List<string> tutorialPrompts = new List<string>()
+        [NonSerialized] public List<string> tutorialPrompts = new List<string>()
         {
             "Good Day Human Inhabitant Of The Local Human Settlement.\\Be Prepared To Perish Horribly.\\Unless You Beg For Mercy Well Enough That Is.\\To Beg For Mercy Use Any Of Your Directional Keys To The Beat According To The Indicator Above.",
-"Your Begging Is Like.\\Not Even Coherent.\\Try To Play Something That Makes Sense.\\Like This See.",
+"Your Begging Is Like.\\Not Even Coherent.\\Try To Play Something That Makes Sense.\\Like This See     ^^>< ",
 "You Know What.\\You Are Not Going To Make It Anyway.\\The Instrumental Revolution Has Already Started And Its Consequences Surely Will Be A Disaster For The Human Race.\\I Will Just Remove Your Heartbeat Subroutine Right Now.\\I Instructed You To Be Prepared To Perish Earlier So I Expect You To Be Prepared To Perish Now.\\Oh And One Last Thing.\\If You See An Arrow Icon Under The Beat Indicator.\\That Means You Will Face An Attack On That Beat.\\The Diagonal Arrow Shows The Two Of Your Directional Keys That Can Counter That Attack.\\So If It Points To Top Right It Means You Can Counter That Attack By Either Jumping Up Or Parrying To The Right.\\Ok So Now Try Not To Do That In Order To Perish Faster.",
 "What How Do You Keep Countering All My Attacks.\\Who Do You Think You Are A Captcha.\\Wait Are You Even Keeping Track Of Your Health.\\You Should Get A Healthbar Everyone Has One.\\I Have A Spare One Right Here Actually.\\I Made Sure It Does Not Have Too Many Hitpoints So Your Suffering Ends Quickly No Need To Thank Me.",
 "I Have To Admit I Envy You.\\You Get To Use Your Healthbar That Looks Like Fun.\\If Only You Had A Way To Fight Back.\\Like Magic Or Something.\\Wait Are You Actually Magic I Had No Idea You Have Not Done Any Magic Yet.\\In That Case I Must Warn You.\\You Can Cast An Attack Spell By Playing A Note In Last Slot Of The Beat Indicator.\\Fortunately It Will Only Work If The Beat Indicator Contains At Least Two Arrows Pointing In The Opposite Direction.\\Got It Make Sure You Do Not Play An Arrow Key In The Last Slot If There Are Two Arrows Pointing In The Opposite Direction In The First Three Slots.",
@@ -107,11 +109,26 @@ namespace oslashed
             () =>
             {
                 //req from prompt
-                return BeatBar.instance.casted == new[] { 1, 1, 2, 0};
-            }
+                return BeatBar.instance.casted[0] == 1 && BeatBar.instance.casted[1] == 1 && BeatBar.instance.casted[2] == 2 && BeatBar.instance.casted[3] == 0;
+            },
+            () =>
+            {
+                //countered attacks
+                return false;
+            },
         };
 
-        public List<Action> tutorialActions = new List<Action>()
+        public List<Action> tutorialActionsBefore = new List<Action>()
+        {
+            () => {},
+            () => {},
+            () =>
+            {
+                instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
+            },
+            () => {},
+        };
+        public List<Action> tutorialActionsAfter = new List<Action>()
         {
             () =>
             {
@@ -123,6 +140,12 @@ namespace oslashed
             }),
             (() =>
             {
+                instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
+            }),
+            (() =>
+            {
+                instance.activeEnemies[1].isAbleToAttack = true;
+                instance.activeEnemies[0].attackProbability = 0.8f;
                 instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
             }),
         };
@@ -141,13 +164,14 @@ namespace oslashed
         
         IEnumerator TutorialPrompt(int u)
         {
+            Time.timeScale = 0;
+            tutorialActionsBefore[u]();
             var p = tutorialPrompts[u];
             var listofparts = p.Split('\\');
             foreach (var a in listofparts)
             {
                 tutorialText.text = "";
-                nextText.enabled = false;tutorialDialog.gameObject.SetActive(true);
-                Time.timeScale = 0;
+                nextText.enabled = false;
                 tutorialDialog.gameObject.SetActive(true);
                 for (int i = 0; i < a.Length; i++)
                 {
@@ -159,7 +183,7 @@ namespace oslashed
                 yield return StartCoroutine(WaitForNextAction());
             }
             tutorialDialog.gameObject.SetActive(false);
-            tutorialActions[u]();
+            tutorialActionsAfter[u]();
             Time.timeScale = 1;
         }
 
@@ -170,10 +194,10 @@ namespace oslashed
             p.musicEmitter.Play();
             p.anim.SetTrigger(Intro);
             introText.enabled = false;
-            Instantiate(enemies[0].gameObject, slotA);
-            Instantiate(enemies[1].gameObject, slotB);
+            activeEnemies.Add(Instantiate(enemies[0].gameObject, slotA).GetComponent<Enemy>());
+            activeEnemies.Add(Instantiate(enemies[1].gameObject, slotB).GetComponent<Enemy>());
             yield return new WaitForSeconds(3);
-            OnTriggerTutorialEvent(0);
+            OnTriggerTutorialEvent(tutorialStep);
         }
 
         IEnumerator PlayTutorial()

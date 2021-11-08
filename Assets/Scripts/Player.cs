@@ -58,7 +58,7 @@ namespace oslashed
             
             var val = VectorConversion(value);
             var beat = BeatBar.instance.actualBeat;
-            sr.color = Color.red;
+            //sr.color = Color.red;
         
             // if spell slot available
             if (BeatBar.instance.casted[beat - 1] == -2)
