@@ -109,6 +109,11 @@ namespace oslashed
         {
            
         }
+
+        public void OnAttack(Enemy attacker,int direction)
+        {
+
+        }
         
         //musicEmitter.SetParameter("Progression", ++state);
     }
