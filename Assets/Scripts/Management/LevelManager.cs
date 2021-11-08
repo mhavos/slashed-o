@@ -145,7 +145,11 @@ namespace oslashed
             (() =>
             {
                 instance.activeEnemies[1].isAbleToAttack = true;
-                instance.activeEnemies[0].attackProbability = 0.8f;
+                instance.activeEnemies[1].attackProbability = 0.8f;
+                instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
+            }),
+            (() =>
+            {
                 instance.p.musicEmitter.SetParameter("Progression", ++instance.p.state);
             }),
         };

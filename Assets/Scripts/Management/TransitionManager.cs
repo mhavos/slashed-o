@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityFx.Async;
 using UnityFx.Async.Extensions;
-using UnityFx.Async.Promises;
 
 namespace oslashed
 {
@@ -32,11 +30,12 @@ namespace oslashed
             else
                 Destroy(this);
         }
+        
         public int currentBuildIndex = (int) SceneIndexes.MenuScreen;
-        private void Awake()
+        private void Start()
         {
             // Load Menu 
-            SceneManager.LoadSceneAsync((int) SceneIndexes.MenuScreen, LoadSceneMode.Additive);
+            LoadScene(SceneIndexes.MenuScreen, false);
         }
 
          List<IAsyncOperation> loading = new List<IAsyncOperation>();
@@ -61,11 +60,11 @@ namespace oslashed
             after();
         }
     
-        public void LoadScene(SceneIndexes target)
+        public void LoadScene(SceneIndexes target, bool unload = true)
         {
             StartCoroutine(ToggleLoadingScreen(true, () =>
             {
-                loading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneByBuildIndex(currentBuildIndex)).ToAsync());
+                if (unload) loading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneByBuildIndex(currentBuildIndex)).ToAsync());
                 loading.Add(SceneManager.LoadSceneAsync((int) target, LoadSceneMode.Additive).ToAsync());
                 currentBuildIndex = (int) target;
 
@@ -91,6 +90,7 @@ namespace oslashed
                 }
             }
             loading.Clear();
+            yield return new WaitForSecondsRealtime(3f);
             StartCoroutine(ToggleLoadingScreen(false, after));
         }
     }

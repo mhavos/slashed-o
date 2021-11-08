@@ -39,26 +39,35 @@ namespace oslashed
 
         public bool Beat(bool mayBeginAttack)
         {
-            //if the enemy is not charging an attack:
-            if(mayBeginAttack & attackStatus == 0){
-                //roll for attack
-                if(UnityEngine.Random.value < attackProbability){
-                    Debug.Log("anger");
-                    arrowType = UnityEngine.Random.Range(0,4);
-                    signals[BeatBar.instance.actualBeat-1].sprite = BeatBar.instance.arrackArrows[arrowType];
-                    anim.SetInteger(Dir,arrowType);
-                    anim.SetTrigger(Attack1);
-                    attackStatus = 4;
-                    return false;
+            if (isAbleToAttack)
+            {
+                //if the enemy is not charging an attack:
+                if (mayBeginAttack & attackStatus == 0)
+                {
+                    //roll for attack
+                    if (UnityEngine.Random.value < attackProbability)
+                    {
+                        Debug.Log("anger");
+                        arrowType = UnityEngine.Random.Range(0, 4);
+                        signals[BeatBar.instance.actualBeat - 1].sprite = BeatBar.instance.arrackArrows[arrowType];
+                        anim.SetInteger(Dir, arrowType);
+                        anim.SetTrigger(Attack1);
+                        attackStatus = 4;
+                        return false;
+                    }
                 }
-            }
-            //on the beat the attack hits:
-            if(attackStatus == 1){
-                signals[BeatBar.instance.actualBeat].sprite = BeatBar.instance.emptyArrow;
-                BeatBar.instance.EnemyAttack(this,arrowType);
-            }
-            if(attackStatus > 0){
-                attackStatus--;
+
+                //on the beat the attack hits:
+                if (attackStatus == 1)
+                {
+                    signals[BeatBar.instance.actualBeat].sprite = BeatBar.instance.emptyArrow;
+                    BeatBar.instance.EnemyAttack(this, arrowType);
+                }
+
+                if (attackStatus > 0)
+                {
+                    attackStatus--;
+                }
             }
 
             return true;
