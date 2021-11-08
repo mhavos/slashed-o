@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace oslashed
 {
@@ -21,11 +22,15 @@ namespace oslashed
         public bool isAbleToAttack;
         
         public int attackStatus;
+        private static readonly int Dir = Animator.StringToHash("dir");
+        private static readonly int Attack1 = Animator.StringToHash("Attack");
+        private List<Image> signals;
         
         void Start()
         {
             anim = GetComponent<Animator>();
             anim.speed = LevelManager.instance.currentSpeed;
+            signals = BeatBar.instance.targetImages.GetRange(9, 4);
         }
 
         void Update()
@@ -41,16 +46,16 @@ namespace oslashed
                 if(UnityEngine.Random.value < attackProbability){
                     Debug.Log("anger");
                     arrowType = UnityEngine.Random.Range(0,4);
-                    //objavi sa sipka pod indikatorom
-                    anim.SetInteger("dir",arrowType);
-                    anim.SetTrigger("Attack");
+                    signals[BeatBar.instance.actualBeat-1].sprite = BeatBar.instance.arrackArrows[arrowType];
+                    anim.SetInteger(Dir,arrowType);
+                    anim.SetTrigger(Attack1);
                     attackStatus = 4;
                     return false;
                 }
             }
             //on the beat the attack hits:
             if(attackStatus == 1){
-                //sipka pod indikatorom zmizne
+                signals[BeatBar.instance.actualBeat].sprite = BeatBar.instance.emptyArrow;
                 BeatBar.instance.EnemyAttack(this,arrowType);
             }
             if(attackStatus > 0){

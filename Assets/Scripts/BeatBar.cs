@@ -29,6 +29,7 @@ namespace oslashed
         public int[] casted = new int[] {-2, -2, -2, -2 };
         
         public List<Sprite> arrows;
+        public List<Sprite> arrackArrows;
         public Sprite emptyArrow;
 
         public Transform[] enemySlots = new Transform[2];
@@ -62,7 +63,6 @@ namespace oslashed
                     realThresholdInMillis = 60000 / tempo * BEAT_COMPLETION_THRESHOLD;
                     this.beat = beat.beat;
                     beatToggle = false;
-                    EnemyAct();
                 }
                 catch (Exception e)
                 {
@@ -96,6 +96,7 @@ namespace oslashed
                 actualLastBeatTime = Time.time;
                 actualBeat = beat;
                 beatToggle = true;
+                EnemyAct();
             }
         }
 
